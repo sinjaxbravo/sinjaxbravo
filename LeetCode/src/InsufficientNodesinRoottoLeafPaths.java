@@ -20,20 +20,17 @@ public class InsufficientNodesinRoottoLeafPaths {
         }
     }
 
-    public TreeNode bstFromPreorder(int[] preorder) {
-        TreeNode t = this.makeTree(preorder, 0);
-        return t;
-    }
+    public TreeNode sufficientSubset(TreeNode root, int limit) {
+        if (root != null) {
+            if (root.val < limit) {
 
-    public TreeNode makeTree(int[] preorder, int i) {
-        TreeNode t = new TreeNode();
-        if (i < preorder.length) {
-            t.val = preorder[i];
-            t.left = this.makeTree(preorder, i * 2 + 1);
-            t.right = this.makeTree(preorder, i * 2 + 2);
+                root = null;
+            }
+            root.left = this.sufficientSubset(root.left, limit);
+            root.right = this.sufficientSubset(root.right, limit);
 
         }
-        return t;
+        return root;
 
     }
 
