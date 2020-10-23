@@ -1,8 +1,8 @@
 
 public class AddTwoNumbers {
     public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
-        int l1Total = 0;
-        int l2Total = 0;
+        long l1Total = 0;
+        long l2Total = 0;
         ListNode temp = l1;
         while (temp != null) {
             l1Total += temp.val;
@@ -19,21 +19,33 @@ public class AddTwoNumbers {
                 l2Total *= 10;
             }
         }
-
-        String total = String.valueOf(l1Total + l2Total);
+        StringBuilder one = new StringBuilder(String.valueOf(l1Total));
+        StringBuilder two = new StringBuilder(String.valueOf(l2Total));
+        if (one.length() > two.length()) {
+            while (one.length() > two.length()) {
+                two.insert(0, 0);
+            }
+        } else if (one.length() < two.length()) {
+            while (one.length() < two.length()) {
+                one.insert(0, 0);
+            }
+        }
+        String total = String.valueOf(Long.parseLong(String.valueOf(one))
+                + Long.parseLong(String.valueOf(two)));
         ListNode ret = this.makeNew(total);
-
         return ret;
 
     }
 
     public ListNode makeNew(String total) {
-        ListNode temp = new ListNode();
         if (total.length() > 0) {
-            temp.next = this.makeNew(total.substring(1));
-            temp.val = Integer.parseInt(String.valueOf(total.charAt(0)));
+            ListNode temp = new ListNode();
+            temp.next = this.makeNew(total.substring(0, total.length() - 1));
+            temp.val = Integer
+                    .parseInt(String.valueOf(total.charAt(total.length() - 1)));
+            return temp;
         }
-        return temp;
+        return null;
     }
 
     public AddTwoNumbers.ListNode callIt() {
