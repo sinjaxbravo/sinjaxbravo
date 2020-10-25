@@ -297,6 +297,10 @@ public class OutfitGenerator {
                     "data/bottoms/SilverLuluPants.png", empty,
                     "SilverLuluPants", true, false);
 
+            Item pant3 = new Item("maroon", "bottom", 3, "all", false,
+                    "data/bottoms/Wine_Lulu_Pants.png", empty, "WineLuluPants",
+                    true, false);
+
             Item pant4 = new Item("blue", "bottom", 4, "all", false,
                     "data/bottoms/BlueLuluBottom.png", empty, "BlueLuluBottom",
                     false, false);
@@ -321,10 +325,9 @@ public class OutfitGenerator {
 
             bottoms.add(pant1);
             bottoms.add(pant2);
-            //bottoms.add(pant3);
+            bottoms.add(pant3);
             bottoms.add(pant4);
             bottoms.add(pant5);
-
             bottoms.add(pant7);
             bottoms.add(pant8);
             bottoms.add(pant9);
