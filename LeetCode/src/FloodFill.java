@@ -1,30 +1,31 @@
 
 public class FloodFill {
-    public int[][] floodFill(int[][] image, int sr, int sc, int newColor) {
+    public static int[][] floodFill(int[][] image, int sr, int sc,
+            int newColor) {
 
-        int color = image[sr][sc];
-        if (color != newColor) {
-            this.dfs(image, sr, sc, color, newColor);
+        if (image[sr][sc] != newColor) {
+            color(image, sr, sc, image[sr][sc], newColor);
         }
         return image;
     }
 
-    public void dfs(int[][] image, int row, int column, int color,
+    public static void color(int[][] image, int row, int column, int color,
             int newColor) {
-        if (image[row][column] == color) {
+        if (image[row][column] != color || row < 0 || column < 0
+                || row >= image.length || column >= image[0].length) {
+
+        } else if (image[row][column] == color) {
+
             image[row][column] = newColor;
-            if (row >= 1) {
-                this.dfs(image, row - 1, column, color, newColor);
-            }
-            if (column >= 1) {
-                this.dfs(image, row, column - 1, color, newColor);
-            }
-            if (row < image.length - 1) {
-                this.dfs(image, row + 1, column, color, newColor);
-            }
-            if (column < image[0].length - 1) {
-                this.dfs(image, row, column + 1, color, newColor);
-            }
+
+            color(image, row - 1, column, color, newColor);
+
+            color(image, row, column - 1, color, newColor);
+
+            color(image, row + 1, column, color, newColor);
+
+            color(image, row, column + 1, color, newColor);
+
         }
     }
 
