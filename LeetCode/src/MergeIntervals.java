@@ -5,51 +5,41 @@ import java.util.List;
 public class MergeIntervals {
 
     public static int[][] merge(int[][] intervals) {
+        if (intervals.length <= 1) {
+            return intervals;
+        }
         Arrays.sort(intervals, (a, b) -> Integer.compare(a[0], b[0]));
-        List<List<Integer>> list = new ArrayList<>();
-
-        for (int i = 0; i < intervals.length; i++) {
-            int k;
-            if (i < intervals.length - 1) {
-                k = i + 1;
+        List<int[]> list = new ArrayList<>();
+        int[] x = intervals[0];
+        list.add(x);
+        int len = 0;
+        for (int i = 1; i < intervals.length; i++) {
+            int start = list.get(len)[0];
+            int stop = list.get(len)[1];
+            int nextStart = intervals[i][0];
+            int nextStop = intervals[i][1];
+            if (stop >= nextStart) {
+                list.get(len)[1] = Math.max(stop, nextStop);
             } else {
-                k = i;
-            }
-            int j = intervals[i][1];
-            while (k <= intervals.length - 1 && j >= intervals[k][0]) {
-                if (intervals[i][1] > intervals[k][1]) {
-                    intervals[k][1] = intervals[i][1];
-                }
-                k++;
-            }
-            list.add(new ArrayList<>());
-            list.get(list.size() - 1).add(intervals[i][0]);
-            if (k - 1 == i) {
-                list.get(list.size() - 1).add(intervals[i][1]);
-            } else if (i != k) {
-                list.get(list.size() - 1).add(intervals[k - 1][1]);
-                i = (k - 1);
-
-            } else {
-                list.get(list.size() - 1).add(intervals[k][1]);
+                len++;
+                list.add(new int[] { nextStart, nextStop });
             }
 
         }
-        System.out.println(list);
-        int[][] temp = new int[list.size()][2];
-        for (int i = 0; i < list.size(); i++) {
-            temp[i][0] = list.get(i).get(0);
-            temp[i][1] = list.get(i).get(1);
-        }
 
-        return temp;
-
+        return list.toArray(new int[len][]);
     }
 
     public static void main(String[] args) {
-        int[][] array = { { 1, 4 }, { 3, 5 }, { 0, 2 } };
+        int[][] array = { { 1, 3 }, { 2, 6 }, { 8, 10 } };
 
-        merge(array);
+        int[][] returArr = merge(array);
+
+        for (int[] i : returArr) {
+            System.out.println(i[0]);
+            System.out.println(i[1]);
+            System.out.println("\n");
+        }
 
     }
 
