@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -340,7 +341,7 @@ public class OutfitGenerator {
             Item shoe2 = new Item("maroon", "shoe", 3, "all", false,
                     "data/shoes/MaroonAllBirdsShoes.png", empty,
                     "MaroonAllBirdsShoes", true, false);
-            Item shoe3 = new Item("black", "shoe", 3, "messy", false,
+            Item shoe3 = new Item("red", "shoe", 3, "messy", false,
                     "data/shoes/RedUGGBoots.png", empty, "RedUGGBoots", true,
                     false);
             Item shoe4 = new Item("white", "shoe", 3, "all", false,
@@ -353,13 +354,13 @@ public class OutfitGenerator {
                     "data/shoes/CheckeredVans.png", empty, "CheckeredVans",
                     true, false);
 
-            Item shoe7 = new Item("orange", "shoe", 3, "all", false,
+            Item shoe7 = new Item("orange", "shoe", 3, "messy", false,
                     "data/shoes/OrangeLoaferShoe.png", empty,
                     "OrangeLoaferShoe", true, false);
             Item shoe8 = new Item("blue", "shoe", 3, "all", false,
                     "data/shoes/NavyGraySneakers.png", empty,
                     "NavyGraySneakers", true, false);
-            Item shoe9 = new Item("white", "shoe", 3, "all", false,
+            Item shoe9 = new Item("white", "shoe", 3, "messy", false,
                     "data/shoes/WhiteHighNikeTop.png", empty,
                     "WhiteHighNikeTop", true, false);
 
@@ -623,6 +624,7 @@ public class OutfitGenerator {
             Map<String, String> tempAndWeather, boolean formal, int temp,
             List<Item> topsLaundry, HashSet<String> colors) {
         List<Item> tops = new LinkedList<>();
+        List<Boolean> status = new ArrayList<>();
 
         int rand = (int) (Math.random() * clothes.size());
 
@@ -645,15 +647,13 @@ public class OutfitGenerator {
 
             top = clothes.get(rand);
 
-            topComplete = true;
-
             if (temperature > 4) {
                 if ((top.heatRating + 1) < temperature
                         && top.layeringOptions.size() > 0) {
 
                     int j = top.layeringOptions.size();
                     if (j < 1) {
-                        topComplete = false;
+                        status.add(false);
                     }
                     while (j > 0 && !override) {
                         int heatRatingTotal = top.heatRating
@@ -667,24 +667,30 @@ public class OutfitGenerator {
                                 override = true;
                                 topComplete = true;
                             } else {
-                                topComplete = false;
+                                status.add(false);
                             }
                             if (top.hood && layer.hood) {
-                                topComplete = false;
+                                status.add(false);
                             }
                             if ((layer.formal && !formal)
                                     || (!layer.formal && formal)) {
-                                topComplete = false;
+                                status.add(false);
                             }
                             if ((!colors.contains(layer.color)
                                     && !colors.contains(top.color))) {
-                                topComplete = false;
+                                status.add(false);
                             }
 
                         } else {
-                            topComplete = false;
+                            status.add(false);
 
                         }
+                        for (int i = 0; i < status.size(); i++) {
+                            if (!status.get(i)) {
+                                topComplete = false;
+                            }
+                        }
+                        status.clear();
                         j--;
                     }
 
@@ -731,6 +737,7 @@ public class OutfitGenerator {
             List<Item> bottomsLaundry) {
 
         int rand = (int) (Math.random() * clothes.size());
+        List<Boolean> status = new ArrayList<>();
 
         boolean bottomComplete = false;
 
@@ -745,29 +752,35 @@ public class OutfitGenerator {
 
             if (top.bright && bottom.bright) {
 
-                bottomComplete = false;
+                status.add(false);
             }
             if (!top.bright && !bottom.bright) {
 
-                bottomComplete = false;
+                status.add(false);
             }
             //Create discrepancy between pant and short threshold
 
             if (!pantsColor && colors.contains(bottom.color)) {
-                bottomComplete = false;
+                status.add(false);
             }
 
             if (formal && !bottom.formal) {
-                bottomComplete = false;
+                status.add(false);
             }
             if (bottomsLaundry.contains(bottom)) {
-                bottomComplete = false;
+                status.add(false);
             }
             if ((top.color.equals("gray") || top.color.equals("blue"))
                     && (bottom.color.equals("gray")
                             || bottom.color.equals("blue"))) {
-                bottomComplete = false;
+                status.add(false);
             }
+            for (int i = 0; i < status.size(); i++) {
+                if (!status.get(i)) {
+                    bottomComplete = false;
+                }
+            }
+            status.clear();
 
             rand = (rand < clothes.size() - 1) ? rand + 1 : 0;
 
@@ -783,6 +796,7 @@ public class OutfitGenerator {
             HashSet<String> shades, Item top, Item bottom, List<Item> outfit) {
 
         List<Object> shoeColors = new LinkedList<>();
+        List<Boolean> status = new ArrayList<>();
 
         for (int i = 0; i < clothes.size(); i++) {
             if (clothes.get(i).type.equals("shoe")) {
@@ -796,28 +810,51 @@ public class OutfitGenerator {
 
         boolean shoeComplete = false;
         boolean pantsColor = colors.contains(bottom.color);
+        int x = clothes.size();
 
         while (!shoeComplete) {
+
+            if (x == 0) {
+                System.out
+                        .println("\n\nIt appears that you dont have any shoes "
+                                + "that match this weather pattern. Override and proceed"
+                                + " by using your regular shoes? (y or n):");
+                Scanner input = new Scanner(System.in);
+                if (input.nextLine().equals("y")) {
+                    weather = "all";
+                } else {
+                    break;
+                }
+
+            }
 
             shoe = clothes.get(rand);
 
             shoeComplete = true;
 
             if (pantsColor && colors.contains(shoe.color)) {
-                shoeComplete = false;
+                status.add(false);
             }
 
             if (bottom.color.equals(shoe.color)) {
-                shoeComplete = false;
+                status.add(false);
             }
             if (!shoe.weather.equals(weather)) {
-                shoeComplete = false;
+                status.add(false);
             }
             if (colors.contains(top) && !top.color.equals(shoe.color)) {
-                shoeComplete = false;
+                status.add(false);
             }
 
+            for (int i = 0; i < status.size(); i++) {
+                if (!status.get(i)) {
+                    shoeComplete = false;
+                }
+            }
+            status.clear();
+
             rand = (rand < clothes.size() - 1) ? rand + 1 : 0;
+            x--;
 
         } //end of while
 
